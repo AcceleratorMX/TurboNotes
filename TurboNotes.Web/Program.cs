@@ -1,7 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using TurboNotes.Infrastructure.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<TurboNotesDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("TurboNotesDbConnection")));
 
 var app = builder.Build();
 
