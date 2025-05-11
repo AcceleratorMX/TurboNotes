@@ -16,6 +16,8 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 var app = builder.Build();
 
+await SeedData.EnsurePopulatedAsync(app);
+
 // Configure the HTTP request pipeline.
 app.UseRouting();
 

@@ -7,7 +7,7 @@ namespace TurboNotes.Web.Controllers;
 
 public class HomeController(INoteRepository noteRepository, ICategoryRepository categoryRepository) : Controller
 {
-    private const int PageSize = 9;
+    private const int PageSize = 12;
 
     public async Task<IActionResult> Index(int? categoryId, int page = 1)
     {
