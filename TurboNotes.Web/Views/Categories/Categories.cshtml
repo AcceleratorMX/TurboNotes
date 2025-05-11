@@ -1,0 +1,49 @@
+@model CategoryViewModel
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@await Html.PartialAsync("_CreateCategory")
+
+<div class="row">
+    <div class="col-md-5">
+        <hr/>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    ID
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Categories)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(c => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(c => item.Name)
+                    </td>
+                    <td class="w-25">
+                        <a asp-controller="Categories" asp-action="Edit" asp-route-id="@item.Id"
+                           class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a asp-controller="Categories" asp-action="Delete" asp-route-id="@item.Id"
+                           class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

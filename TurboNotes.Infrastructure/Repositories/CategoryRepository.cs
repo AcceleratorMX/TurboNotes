@@ -9,11 +9,10 @@ public  class CategoryRepository(TurboNotesDbContext context) : ICategoryReposit
 {
     public async Task<IEnumerable<Category>> GetAllAsync() => await context.Categories.ToListAsync();
     
-    public async Task<Category> GetByIdAsync(int id) =>
-        await context.Categories.FirstOrDefaultAsync(c => c.Id == id) 
-        ?? throw new InvalidOperationException($"Category with id {id} not found");
+    public async Task<Category> GetByIdAsync(int id) => await context.Categories.FindAsync(id) ??
+                                                        throw new Exception($"Category with id {id} not found");
     
-    public async Task AddAsync(Category category)
+    public async Task CreateAsync(Category category)
     {
         context.Categories.Add(category);
         await context.SaveChangesAsync();
@@ -35,13 +34,13 @@ public  class CategoryRepository(TurboNotesDbContext context) : ICategoryReposit
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
-            var vacancies = await context.Notes
+            var notes = await context.Notes
                 .Where(v => v.CategoryId == id)
                 .ToListAsync();
 
-            foreach (var vacancy in vacancies)
+            foreach (var note in notes)
             {
-                vacancy.CategoryId = 1;
+                note.CategoryId = 1;
             }
             
             var category = await context.Categories.FindAsync(id);

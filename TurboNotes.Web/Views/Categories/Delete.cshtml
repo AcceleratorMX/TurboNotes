@@ -1,0 +1,15 @@
+@model CategoryViewModel
+
+@{
+    ViewData["Title"] = "Deletion";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+<div class="mb-4 fs-4">Confirm deletion category - <span class="fw-bold">@Html.DisplayFor(model => model.Category.Name)</span></div>
+
+<form asp-action="Delete" asp-route-id="@Model.Category.Id" method="post">
+    <input type="hidden" asp-for="Category.Id"/>
+    <button type="submit" class="btn btn-outline-danger">Confirm</button> |
+    <a asp-controller="Notes" asp-action="Edit" asp-route-id="@Model.Category.Id" class="btn btn-outline-secondary">Back</a>
+</form>

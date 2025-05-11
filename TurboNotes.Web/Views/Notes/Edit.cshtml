@@ -1,0 +1,43 @@
+@model NoteViewModel
+
+@{
+    ViewData["Title"] = "Edit Note";
+}
+
+<h1>@ViewData["Title"]</h1>
+<div class="row">
+    <div class="col-md-4">
+        <hr />
+        <form asp-controller="Notes" asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Note.Id"/>
+            <div class="form-group mb-4">
+                <label asp-for="Note.Title" class="control-label"></label>
+                <input asp-for="Note.Title" class="form-control"/>
+                <span asp-validation-for="Note.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="Note.Content" class="control-label"></label>
+                <textarea asp-for="Note.Content" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Note.Content" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="Note.Deadline" class="control-label"></label>
+                <input asp-for="Note.Deadline" class="form-control" type="datetime-local"/>
+                <span asp-validation-for="Note.Deadline" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-4">
+                <label asp-for="Note.CategoryId" class="control-label"></label>
+                <select asp-for="Note.CategoryId" class="form-control form-select" asp-items="ViewBag.Categories"></select>
+                <span asp-validation-for="Note.CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-4 d-flex justify-content-between">
+                <div>
+                    <button type="submit" class="btn btn-sm btn-outline-primary">Submit</button>
+                    <a asp-controller="Home" asp-action="Index" asp-route-id="@Model.Note.Id" class="btn btn-sm btn-outline-secondary">Back</a>
+                </div>
+                <a asp-controller="Notes" asp-action="Delete" asp-route-id="@Model.Note.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+            </div>
+        </form>
+    </div>
+</div>

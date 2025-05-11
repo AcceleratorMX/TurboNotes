@@ -8,5 +8,5 @@ public class Note
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? Deadline { get; set; }
     public int CategoryId { get; set; }
-    public Category Category { get; set; } = new Category();
+    public Category? Category { get; set; }
 }

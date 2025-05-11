@@ -1,0 +1,58 @@
+@model NoteViewModel
+<a asp-controller="Notes" asp-action="Create" class="btn btn-outline-primary mb-4">Create Note</a>
+<div class="row">
+    @foreach (var note in Model.Notes)
+    {
+        <div class="col-md-2 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="card-title fw-bold">@note.Title</div>
+                    <div>@(note.Deadline?.ToString("g") ?? string.Empty)</div>
+                </div>
+                <div class="card-body custom-card-body">
+                    <div class="card-text">
+                        <p>@note.Content</p>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <p class="mb-0">@note.CreatedAt.ToShortDateString()</p>
+                    <p class="mb-0">@note.Category!.Name</p>
+                    <a asp-controller="Notes" asp-action="Edit" asp-route-id="@note.Id">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (Model.PagingInfo.TotalPages > 1)
+{
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            @if (Model.PagingInfo.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       href="@Url.Action("Index", "Home", new { categoryId = Model.SelectedCategoryId, page = Model.PagingInfo.CurrentPage - 1 })">Previous</a>
+                </li>
+            }
+
+            @for (var i = 1; i <= Model.PagingInfo.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PagingInfo.CurrentPage ? "active" : "")">
+                    <a class="page-link"
+                       href="@Url.Action("Index", "Home", new { categoryId = Model.SelectedCategoryId, page = i })">@i</a>
+                </li>
+            }
+
+            @if (Model.PagingInfo.CurrentPage < Model.PagingInfo.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       href="@Url.Action("Index", "Home", new { categoryId = Model.SelectedCategoryId, page = Model.PagingInfo.CurrentPage + 1 })">Next</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

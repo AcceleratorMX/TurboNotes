@@ -1,0 +1,17 @@
+@model CategoryViewModel
+
+<div class="row mt-4">
+    <form asp-controller="Categories" asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="d-flex">
+            <div class="form-group col-md-4">
+                <label asp-for="Category.Name" class="control-label" hidden="hidden"></label>
+                <input asp-for="Category.Name" class="form-control" placeholder="Input the name of new category..." />
+                <span asp-validation-for="Category.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group ms-4">
+                <button type="submit" class="btn btn-outline-primary">Create</button>
+            </div>
+        </div>
+    </form>
+</div>

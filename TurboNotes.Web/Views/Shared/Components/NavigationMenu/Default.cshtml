@@ -1,0 +1,26 @@
+@model NavigationMenuViewModel
+
+<div class="d-flex align-items-start">
+    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        <a href="@Url.Action("Index", "Home")"
+           class="nav-link @(Model.SelectedCategory == null ? "active" : "")"
+           id="v-pills-all-tab"
+           role="tab"
+           aria-controls="v-pills-all"
+           aria-selected="@(Model.SelectedCategory == null ? "true" : "false")">
+            All Notes
+        </a>
+
+        @foreach (var category in Model.Categories)
+        {
+            <a href="@Url.Action("Index", "Home", new { categoryId = category.Id })"
+               class="nav-link @(category.Id == Model.SelectedCategory ? "active" : "")"
+               id="v-pills-@category.Id-tab"
+               role="tab"
+               aria-controls="v-pills-@category.Id"
+               aria-selected="@(category.Id == Model.SelectedCategory ? "true" : "false")">
+                @category.Name
+            </a>
+        }
+    </div>
+</div>

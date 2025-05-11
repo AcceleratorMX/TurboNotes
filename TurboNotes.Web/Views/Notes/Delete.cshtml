@@ -1,0 +1,15 @@
+@model NoteViewModel
+
+@{
+    ViewData["Title"] = "Deletion";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+<div class="mb-4 fs-4">Confirm deletion note - <span class="fw-bold">@Html.DisplayFor(model => model.Note.Title)</span></div>
+
+<form asp-action="Delete" asp-route-id="@Model.Note.Id" method="post">
+    <input type="hidden" asp-for="Note.Id"/>
+    <button type="submit" class="btn btn-outline-danger">Confirm</button> |
+    <a asp-controller="Notes" asp-action="Edit" asp-route-id="@Model.Note.Id" class="btn btn-outline-secondary">Back</a>
+</form>
