@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using TurboNotes.Core.Models;
+using TurboNotes.Core.Services;
 
 namespace TurboNotes.Infrastructure.Data;
 
@@ -30,12 +31,14 @@ public static class SeedData
 
             for (var i = 1; i <= 13; i++)
             {
+                var localDeadline = yesterday.AddDays(random.Next(0, 10)).AddHours(random.Next(0, 24));
+                
                 var note = new Note
                 {
                     Title = $"Test note {i}",
                     Content = $"Test note content {i}",
-                    CreatedAt = DateTime.Now,
-                    Deadline = yesterday.AddDays(random.Next(0, 10)).AddHours(random.Next(0, 24)),
+                    CreatedAt = TimeService.GetCurrentUtcTime(),
+                    Deadline = TimeService.ToUtc(localDeadline),
                     CategoryId = random.Next(1, 5)
                 };
 

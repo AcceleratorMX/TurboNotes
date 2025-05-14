@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TurboNotes.Core.Interfaces;
 using TurboNotes.Core.Models;
+using TurboNotes.Core.Services;
 using TurboNotes.Web.Models.ViewModels;
 
 namespace TurboNotes.Web.Controllers;
@@ -30,11 +31,9 @@ public class NotesController(INoteRepository noteRepository, ICategoryRepository
         {
             Title = model.Note.Title,
             Content = model.Note.Content,
-            Deadline = model.Note.Deadline.HasValue
-                ? DateTime.SpecifyKind(model.Note.Deadline.Value, DateTimeKind.Local).ToUniversalTime()
-                : null,
+            Deadline = TimeService.ToUtc(model.Note.Deadline),
             CategoryId = model.Note.CategoryId,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = TimeService.GetCurrentUtcTime()
         };
         await noteRepository.CreateAsync(note);
         return RedirectToAction(nameof(Index), "Home");
@@ -46,7 +45,7 @@ public class NotesController(INoteRepository noteRepository, ICategoryRepository
         var note = await noteRepository.GetByIdAsync(id);
         if (note.Deadline.HasValue)
         {
-            note.Deadline = note.Deadline.Value.ToLocalTime();
+            note.Deadline = TimeService.ToLocal(note.Deadline);
         }
         
         var model = new NoteViewModel { Note = note };
@@ -74,9 +73,7 @@ public class NotesController(INoteRepository noteRepository, ICategoryRepository
 
         note.Title = model.Note.Title;
         note.Content = model.Note.Content;
-        note.Deadline = model.Note.Deadline.HasValue
-            ? DateTime.SpecifyKind(model.Note.Deadline.Value, DateTimeKind.Local).ToUniversalTime()
-            : null;
+        note.Deadline = TimeService.ToUtc(model.Note.Deadline);
         note.CategoryId = model.Note.CategoryId;
 
         await noteRepository.UpdateAsync(note);
