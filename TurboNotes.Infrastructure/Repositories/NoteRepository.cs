@@ -14,7 +14,12 @@ public class NoteRepository(TurboNotesDbContext context) : INoteRepository
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
-
+    public async Task<IEnumerable<Note>> GetAllWithDeadlineAsync() =>
+        await context.Notes
+            .Include(n => n.Category)
+            .Where(n => n.Deadline.HasValue)
+            .ToListAsync();
+    
     public async Task<Note> GetByIdAsync(int id) =>
         await context.Notes
             .Include(n => n.Category)

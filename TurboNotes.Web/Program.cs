@@ -2,17 +2,23 @@ using Microsoft.EntityFrameworkCore;
 using TurboNotes.Core.Interfaces;
 using TurboNotes.Infrastructure.Data;
 using TurboNotes.Infrastructure.Repositories;
+using TurboNotes.Web.Hubs;
+using TurboNotes.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<TurboNotesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TurboNotesDbConnection")));
 
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+builder.Services.AddHostedService<DeadlineNotificationService>();
+
 
 var app = builder.Build();
 
@@ -25,5 +31,6 @@ app.UseStaticFiles();
 
 app.MapDefaultControllerRoute();
 
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();

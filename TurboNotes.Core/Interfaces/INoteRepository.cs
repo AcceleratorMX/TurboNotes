@@ -5,6 +5,7 @@ namespace TurboNotes.Core.Interfaces;
 public interface INoteRepository
 {
     Task<IEnumerable<Note>> GetAllAsync(int page, int pageSize);
+    Task<IEnumerable<Note>> GetAllWithDeadlineAsync();
     Task<Note> GetByIdAsync(int id);
     Task<IEnumerable<Note>> GetByCategoryAsync(int categoryId, int page, int pageSize);
     Task<int> GetTotalCountAsync(int? categoryId);

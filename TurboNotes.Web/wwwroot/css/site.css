@@ -30,3 +30,49 @@ html {
   height: 200px;
   overflow-y: auto;
 }
+
+#notificationsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#notificationsList li {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  background-color: #f0f4ff;
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  max-width: fit-content;
+  min-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: sans-serif;
+}
+
+.notification-text {
+  flex: 1;
+  margin-right: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+#notificationsList li button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #888;
+  transition: color 0.2s;
+  padding: 2px 4px;
+}
+
+#notificationsList li button:hover {
+  color: #e00;
+}

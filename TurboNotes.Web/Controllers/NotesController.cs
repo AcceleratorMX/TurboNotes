@@ -30,7 +30,9 @@ public class NotesController(INoteRepository noteRepository, ICategoryRepository
         {
             Title = model.Note.Title,
             Content = model.Note.Content,
-            Deadline = model.Note.Deadline,
+            Deadline = model.Note.Deadline.HasValue
+                ? DateTime.SpecifyKind(model.Note.Deadline.Value, DateTimeKind.Local).ToUniversalTime()
+                : null,
             CategoryId = model.Note.CategoryId,
             CreatedAt = DateTime.UtcNow
         };
@@ -42,6 +44,11 @@ public class NotesController(INoteRepository noteRepository, ICategoryRepository
     public async Task<IActionResult> Edit(int id)
     {
         var note = await noteRepository.GetByIdAsync(id);
+        if (note.Deadline.HasValue)
+        {
+            note.Deadline = note.Deadline.Value.ToLocalTime();
+        }
+        
         var model = new NoteViewModel { Note = note };
 
         ViewBag.Categories = await GetCategoriesSelectList();
@@ -67,14 +74,15 @@ public class NotesController(INoteRepository noteRepository, ICategoryRepository
 
         note.Title = model.Note.Title;
         note.Content = model.Note.Content;
-        note.Deadline = model.Note.Deadline;
+        note.Deadline = model.Note.Deadline.HasValue
+            ? DateTime.SpecifyKind(model.Note.Deadline.Value, DateTimeKind.Local).ToUniversalTime()
+            : null;
         note.CategoryId = model.Note.CategoryId;
 
         await noteRepository.UpdateAsync(note);
         return RedirectToAction(nameof(Index), "Home");
     }
-
-
+    
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
