@@ -13,9 +13,26 @@ public class HomeController(INoteRepository noteRepository, ICategoryRepository 
     {
         var categories = await categoryRepository.GetAllAsync();
         var totalItems = await noteRepository.GetTotalCountAsync(categoryId);
-        var notes = categoryId.HasValue
-            ? await noteRepository.GetByCategoryAsync(categoryId.Value, page, PageSize)
-            : await noteRepository.GetAllAsync(page, PageSize);
+        var notes = (categoryId.HasValue
+                ? await noteRepository.GetByCategoryAsync(categoryId.Value, page, PageSize)
+                : await noteRepository.GetAllAsync(page, PageSize))
+            .ToList();
+        
+        foreach (var note in notes)
+        {
+            if (note.Deadline.HasValue)
+            {
+                note.Deadline = note.Deadline.Value.ToLocalTime();
+            }
+        }
+        
+        foreach (var note in notes)
+        {
+            if (note.Deadline.HasValue)
+            {
+                note.Deadline = note.Deadline.Value.ToLocalTime();
+            }
+        }
 
         var viewModel = new NoteViewModel
         {

@@ -3,6 +3,7 @@ using TurboNotes.Core.Interfaces;
 using TurboNotes.Infrastructure.Data;
 using TurboNotes.Infrastructure.Repositories;
 using TurboNotes.Web.Hubs;
+using TurboNotes.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,9 @@ builder.Services.AddDbContext<TurboNotesDbContext>(options =>
 
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+builder.Services.AddHostedService<DeadlineNotificationService>();
+
 
 var app = builder.Build();
 

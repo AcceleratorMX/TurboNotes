@@ -22,8 +22,17 @@
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="Categories" asp-action="Categories">Categories</a>
                 </li>
-                <li class="nav-item">
-
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-bell"></i>
+                        <span id="notificationCount" class="badge bg-danger">0</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="notificationDropdown">
+                        <li><span class="dropdown-header">Notifications</span></li>
+                        <li>
+                            <ul id="notificationsList" class="list-unstyled px-3"></ul>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
