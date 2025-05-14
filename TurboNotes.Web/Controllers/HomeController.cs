@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TurboNotes.Core.Interfaces;
+using TurboNotes.Core.Services;
 using TurboNotes.Web.Models;
 using TurboNotes.Web.Models.ViewModels;
 
@@ -20,18 +21,8 @@ public class HomeController(INoteRepository noteRepository, ICategoryRepository 
         
         foreach (var note in notes)
         {
-            if (note.Deadline.HasValue)
-            {
-                note.Deadline = note.Deadline.Value.ToLocalTime();
-            }
-        }
-        
-        foreach (var note in notes)
-        {
-            if (note.Deadline.HasValue)
-            {
-                note.Deadline = note.Deadline.Value.ToLocalTime();
-            }
+            note.Deadline = TimeService.ToLocal(note.Deadline);
+            note.CreatedAt = TimeService.ToLocal(note.CreatedAt).GetValueOrDefault();
         }
 
         var viewModel = new NoteViewModel

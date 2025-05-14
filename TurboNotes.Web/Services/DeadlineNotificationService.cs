@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using TurboNotes.Core.Interfaces;
+using TurboNotes.Core.Services;
 using TurboNotes.Web.Hubs;
 
 namespace TurboNotes.Web.Services;
@@ -18,7 +19,7 @@ public class DeadlineNotificationService(IServiceScopeFactory scopeFactory, IHub
             var noteRepository = scope.ServiceProvider.GetRequiredService<INoteRepository>();
 
             var notes = await noteRepository.GetAllWithDeadlineAsync();
-            var now = DateTime.UtcNow;
+            var now = TimeService.GetCurrentUtcTime();
 
             lock (_lock)
             {
@@ -32,7 +33,8 @@ public class DeadlineNotificationService(IServiceScopeFactory scopeFactory, IHub
                 
                 foreach (var note in notes)
                 {
-                    var timeUntilDeadline = note.Deadline!.Value - now;
+                    var deadline = note.Deadline!.Value;
+                    var timeUntilDeadline = deadline - now;
 
                     string message;
                     string notificationType;
@@ -70,13 +72,13 @@ public class DeadlineNotificationService(IServiceScopeFactory scopeFactory, IHub
                     
                     if (_notifiedNotes.TryGetValue(note.Id, out var existing) &&
                         existing.LastMessage == notificationType) continue;
-
+                    
                     var notification = new
                     {
                         Id = note.Id,
                         Message = message,
                         Type = notificationType,
-                        Deadline = note.Deadline.Value.ToString("o")
+                        Deadline = deadline.ToString("o")
                     };
 
                     hubContext.Clients.All.SendAsync(
@@ -84,7 +86,7 @@ public class DeadlineNotificationService(IServiceScopeFactory scopeFactory, IHub
                         notification,
                         cancellationToken: stoppingToken);
 
-                    _notifiedNotes[note.Id] = (note.Deadline.Value, notificationType);
+                    _notifiedNotes[note.Id] = (deadline, notificationType);
                 }
             }
 
