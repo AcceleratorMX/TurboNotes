@@ -11,7 +11,7 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 <header class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid w-100">
+    <div class="container-fluid">
         <a class="navbar-brand" asp-controller="Home" asp-action="Index">Turbo Notes</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,7 +25,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown">
                         <i class="bi bi-bell"></i>
-                        <span id="notificationCount" class="badge bg-danger">0</span>
+                        <span id="notificationCount" class="badge">0</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="notificationDropdown">
                         <li><span class="dropdown-header">Notifications</span></li>
@@ -50,13 +50,9 @@
     </div>
 </div>
 
-<footer class="bg-dark text-white py-3 mt-auto">
-    <div class="container-fluid w-100">
-        <div class="row">
-            <div class="col-md-6">
-                <p class="mb-0">&copy; 2025 Turbo Notes. Karpinskyi Oleksandr WT-23-2.</p>
-            </div>
-        </div>
+<footer class="bg-dark text-white py-1 mt-auto">
+    <div class="container-fluid">
+        <p class="mb-0 p-0">&copy; 2025 Turbo Notes. Karpinskyi Oleksandr WT-23-2.</p>
     </div>
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
