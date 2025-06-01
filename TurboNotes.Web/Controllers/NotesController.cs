@@ -7,103 +7,93 @@ using TurboNotes.Web.Models.ViewModels;
 
 namespace TurboNotes.Web.Controllers;
 
-public class NotesController(INoteRepository noteRepository, ICategoryRepository categoryRepository) : Controller
+public class NotesController : Controller
 {
-    public async Task<IActionResult> Create()
-    {
-        var model = new NoteViewModel { Note = new Note() };
+    private readonly NoteService _noteService;
+    private const int PageSize = 10;
 
-        ViewBag.Categories = await GetCategoriesSelectList();
-        return View(model);
+    public NotesController(NoteService noteService)
+    {
+        _noteService = noteService;
+    }
+
+    public async Task<IActionResult> Index(int? categoryId, int page = 1)
+    {
+        var notes = categoryId.HasValue
+            ? await _noteService.GetNotesByCategoryAsync(categoryId.Value, page, PageSize)
+            : await _noteService.GetAllNotesAsync(page, PageSize);
+
+        var totalCount = await _noteService.GetTotalNotesCountAsync(categoryId);
+
+        ViewBag.CurrentCategoryId = categoryId;
+        ViewBag.CurrentPage = page;
+        ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)PageSize);
+
+        return View(notes);
+    }
+
+    public async Task<IActionResult> Details(int id)
+    {
+        var note = await _noteService.GetNoteByIdAsync(id);
+        if (note == null)
+            return NotFound();
+
+        return View(note);
+    }
+
+    public IActionResult Create()
+    {
+        return View();
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(NoteViewModel model)
+    public async Task<IActionResult> Create(Note note)
     {
         if (!ModelState.IsValid)
-        {
-            ViewBag.Categories = await GetCategoriesSelectList();
-            return View(model);
-        }
+            return View(note);
 
-        var note = new Note
-        {
-            Title = model.Note.Title,
-            Content = model.Note.Content,
-            Deadline = TimeService.ToUtc(model.Note.Deadline),
-            CategoryId = model.Note.CategoryId,
-            CreatedAt = TimeService.GetCurrentUtcTime()
-        };
-        await noteRepository.CreateAsync(note);
-        return RedirectToAction(nameof(Index), "Home");
+        await _noteService.CreateNoteAsync(note);
+        return RedirectToAction(nameof(Index));
     }
 
-    [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
-        var note = await noteRepository.GetByIdAsync(id);
-        if (note.Deadline.HasValue)
-        {
-            note.Deadline = TimeService.ToLocal(note.Deadline);
-        }
-        
-        var model = new NoteViewModel { Note = note };
+        var note = await _noteService.GetNoteByIdAsync(id);
+        if (note == null)
+            return NotFound();
 
-        ViewBag.Categories = await GetCategoriesSelectList();
-        return View(model);
+        return View(note);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, NoteViewModel model)
+    public async Task<IActionResult> Edit(int id, Note note)
     {
-        if (id != model.Note.Id)
-        {
+        if (id != note.Id)
             return BadRequest();
-        }
 
         if (!ModelState.IsValid)
-        {
-            ViewBag.Categories = await GetCategoriesSelectList();
-            return View(model);
-        }
+            return View(note);
 
-        var note = await noteRepository.GetByIdAsync(id);
-
-        note.Title = model.Note.Title;
-        note.Content = model.Note.Content;
-        note.Deadline = TimeService.ToUtc(model.Note.Deadline);
-        note.CategoryId = model.Note.CategoryId;
-
-        await noteRepository.UpdateAsync(note);
-        return RedirectToAction(nameof(Index), "Home");
+        await _noteService.UpdateNoteAsync(note);
+        return RedirectToAction(nameof(Index));
     }
-    
-    [HttpGet]
+
     public async Task<IActionResult> Delete(int id)
     {
-        var note = await noteRepository.GetByIdAsync(id);
-        var model = new NoteViewModel { Note = note };
-        return View(model);
+        var note = await _noteService.GetNoteByIdAsync(id);
+        if (note == null)
+            return NotFound();
+
+        return View(note);
     }
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id, NoteViewModel model)
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        if (id != model.Note.Id)
-        {
-            return BadRequest();
-        }
-
-        await noteRepository.DeleteAsync(id);
-        return RedirectToAction(nameof(Index), "Home");
-    }
-
-    private async Task<SelectList> GetCategoriesSelectList()
-    {
-        var categories = await categoryRepository.GetAllAsync();
-        return new SelectList(categories, "Id", "Name");
+        await _noteService.DeleteNoteAsync(id);
+        return RedirectToAction(nameof(Index));
     }
 }
