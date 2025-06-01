@@ -18,6 +18,7 @@ builder.Services.AddDbContext<TurboNotesDbContext>(options =>
 
 builder.Services.AddScoped<INoteRepository, NoteRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<INoteService, NoteService>();
 
 builder.Services.AddSingleton<INotificationStrategy, ExpiredNotificationStrategy>();
 builder.Services.AddSingleton<INotificationStrategy, OneMinuteNotificationStrategy>();

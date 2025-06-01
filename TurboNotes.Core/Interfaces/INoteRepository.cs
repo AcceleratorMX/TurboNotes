@@ -11,5 +11,5 @@ public interface INoteRepository
     Task<int> GetTotalCountAsync(int? categoryId);
     Task CreateAsync(Note note);
     Task UpdateAsync(Note note);
-    Task DeleteAsync(int id); 
+    Task DeleteAsync(int id);
 }
